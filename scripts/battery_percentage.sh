@@ -49,7 +49,8 @@ battery_value() {
         for battery in $(upower -e | grep battery); do
             upower -i $battery |\
             grep percentage |\
-            awk '{print $2}'
+            sed 's/[^0-9]*//g' |\
+            awk '{print $1}'
         done | xargs echo
     elif command_exists "acpi"; then
         acpi -b |\
