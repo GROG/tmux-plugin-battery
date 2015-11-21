@@ -37,16 +37,24 @@ init_vars() {
 }
 
 battery_value() {
-    if command_exists "pmset"; then
-        pmset -g batt | awk 'NR==2 { gsub(/;/,""); print $2 }'
+    if [ -x "$custom_percentage" ]; then
+        eval "$custom_percentage"
+    elif command_exists "pmset"; then
+        pmset -g batt |\
+        tail -1 |\
+        awk '{print $2}' |\
+        sed 's/[^0-9]*//g' |\
+        awk '{printf("%02d\n", $1)}'
     elif command_exists "upower"; then
         for battery in $(upower -e | grep battery); do
-            upower -i $battery | grep percentage | awk '{print $2}'
+            upower -i $battery |\
+            grep percentage |\
+            awk '{print $2}'
         done | xargs echo
     elif command_exists "acpi"; then
-        acpi -b | grep -Eo "[0-9]+%"
-    elif [ -x $custom_percentage ]; then
-        eval $custom_percentage
+        acpi -b |\
+        grep -Eo "[0-9]+%" |\
+        awk '{printf("%02d\n", $1)}'
     fi
 }
 
