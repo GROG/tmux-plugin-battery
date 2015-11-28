@@ -1,5 +1,7 @@
 # tmux-plugin-battery
 
+[![Build Status](https://travis-ci.org/GROG/tmux-plugin-battery.svg?branch=master)](https://travis-ci.org/GROG/tmux-plugin-battery)
+
 This plugin let's you add the battery level to tmux status fields.
 
 
