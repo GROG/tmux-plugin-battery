@@ -60,21 +60,25 @@ battery_value() {
 }
 
 battery_percentage() {
-    local battery_p=$(battery_value)
+    local battery_p=""
 
-    if [ -z "$battery_p" ]; then
-        print_color "error" "EE"
-    elif [ "$battery_p" -gt "$high_percentage" ]; then
-        print_color "high" "$battery_p"
-    elif [ "$battery_p" -gt "$mid_percentage" ]; then
-        print_color "mid" "$battery_p"
-    else
-        print_color "low" "$battery_p"
-    fi
+    for battery in $(battery_value); do
+        if [ -z "$battery" ]; then
+            battery_p="$battery_p $(print_color "error" "EE")"
+        elif [ "$battery" -gt "$high_percentage" ]; then
+            battery_p="$battery_p $(print_color "high" "$battery")"
+        elif [ "$battery" -gt "$mid_percentage" ]; then
+            battery_p="$battery_p $(print_color "mid" "$battery")"
+        else
+            battery_p="$battery_p $(print_color "low" "$battery")"
+        fi
+    done
+
+    echo $battery_p
 }
 
 main() {
     init_vars
-	battery_percentage
+    battery_percentage
 }
 main
